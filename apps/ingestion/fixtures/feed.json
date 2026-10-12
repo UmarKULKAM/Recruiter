@@ -1,0 +1,17 @@
+{
+  "source": "fixture",
+  "items": [
+    {
+      "external_id": "fixture-kampala-software-engineer",
+      "text": "Software Engineer\n\nEmployer: Nalubega Health Systems Ltd\nSeniority: Mid-level\nLocation: Kampala, Uganda. The work requires presence at the Kololo office.\nSalary: UGX 2,500,000 gross per month\nApply by 30 November 2026.\nSkills: Python, Django, PostgreSQL\nRegional operational experience in East Africa is required.\nContact: careers@nalubegahealth.co.ug\nThe applicant does not pay a fee.\n"
+    },
+    {
+      "external_id": "fixture-applicant-fee",
+      "text": "Data Entry Clerk\n\nEmployer: Lakeside Outreach\nLocation: Kampala. Presence at a Kampala office is required.\nApplicants must pay a training deposit of UGX 80,000 in order to apply.\nSend your CV to jobs.helper254@gmail.com.\nQualifications: typing.\nApplicants must be under 30.\n"
+    },
+    {
+      "external_id": "fixture-kcca-furniture-tender",
+      "text": "Invitation to bid for the supply of office furniture.\n\nProcuring entity: Kampala Capital City Authority.\nThis is a public procurement tender. It is not an offer of paid work for a person.\nBids close on 15 December 2026.\nSubmit through the entity procurement portal.\n"
+    }
+  ]
+}
