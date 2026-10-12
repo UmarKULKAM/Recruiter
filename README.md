@@ -1,8 +1,14 @@
 # Recruiter
 
-Django project for job posts aimed at Uganda and at roles that can be done from Uganda, plus a candidate coach. This repository root is the project folder: `manage.py` lives here.
+Django project for job posts aimed at Uganda and at roles that can be done from Uganda. This repository root is the project folder: `manage.py` lives here.
 
-`apps/ingestion` parses fixture postings. `apps/coaching` is the candidate coach: CV notes, a mock interview, and a seven-day plan. The recruiter module is not in this repository. LinkedIn, Indeed, ZipRecruiter, and Google Custom Search are not scraped.
+The modules are:
+
+- `apps/ingestion` parses fixture postings.
+- `apps/coaching` is the candidate coach: CV notes, a mock interview, and a seven-day plan.
+- `apps/recruiting` is the recruiter shortlist: keyword overlap, an evaluation for one application, and talent-pool search.
+
+LinkedIn, Indeed, ZipRecruiter, and Google Custom Search are not scraped.
 
 ## Run locally
 
@@ -69,3 +75,19 @@ from apps.coaching.services import (
     write_progress_report,
 )
 ```
+
+## Recruiter
+
+`apps.recruiting` uses the same Gemini wrapper. `RECRUITER_EVALUATION` is Gemini 2.5 Flash at temperature 0, with thinking down. The system instruction is the shared policy plus that mode prompt. Closing untrusted tags are stripped. The service reads `response.parsed`, then `serialize_recruiter_evaluation`.
+
+Django owns keyword overlap. Rubric `keyword-overlap-1` normalizes stated skills from the job and from the CV (case, punctuation, and exact equality). Discriminatory criteria and identity values are not match features. The model schema has no matched list, missing list, or percentage. The evaluation row stores the percentage and the rubric version. The API adds `recruiter_note_label` as `model-written` after the call. That label is not part of the note text.
+
+- An application to one employment post is the consent to assess that application. The call does not require talent-pool consent.
+- Talent-pool search reads stored rows and does not score the candidate. It needs a separate `TalentPoolConsent` row. Without an active consent record, the response omits name, phone, email, national ID, photo, and date of birth.
+- Those identity values are removed from the job text and the CV text before the model call.
+- `regional_operational_experience` is stored as null unless the posting requires it and the quote is a contiguous copy from the CV.
+- A salary note is stored as null unless the candidate shared a gross monthly figure and the posting states a gross monthly band.
+
+Django REST Framework object permissions guard evaluation. Users in the Django group `candidate` cannot call it, including on their own application. Users in the group `recruiter` can. `POST /api/recruiting/applications/<id>/evaluate/` runs one evaluation. `GET /api/recruiting/talent-pool/` is the masked search.
+
+The recruiting tests mock Gemini. They check that the overlap percentage is computed in Django, that a talent-pool view without consent excludes identity fields, and that a candidate user receives a permission denial.

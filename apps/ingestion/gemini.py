@@ -1,9 +1,9 @@
-"""Gemini wrapper for the parser and the candidate coach.
+"""Gemini wrapper for the parser, the candidate coach, and recruiter evaluation.
 
-One client. Flash at temperature 0 for JOB_PARSER, CV_OPTIMIZER, and
-CANDIDATE_REPORT, with thinking down. MOCK_INTERVIEW uses Pro at about 0.2,
-synchronously, with thinking available. Each call reads ``response.parsed``,
-then the mode serializer.
+One client. Flash at temperature 0 for JOB_PARSER, CV_OPTIMIZER,
+CANDIDATE_REPORT, and RECRUITER_EVALUATION, with thinking down.
+MOCK_INTERVIEW uses Pro at about 0.2, synchronously, with thinking available.
+Each call reads ``response.parsed``, then the mode serializer.
 """
 
 import re
@@ -27,6 +27,7 @@ _MODE_ROUTE: dict[str, tuple[str, float, int | None]] = {
     "JOB_PARSER": (FLASH_MODEL, 0, 0),
     "CV_OPTIMIZER": (FLASH_MODEL, 0, 0),
     "CANDIDATE_REPORT": (FLASH_MODEL, 0, 0),
+    "RECRUITER_EVALUATION": (FLASH_MODEL, 0, 0),
     "MOCK_INTERVIEW": (PRO_MODEL, PRO_TEMPERATURE, None),
 }
 
