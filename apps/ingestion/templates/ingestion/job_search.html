@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Run job search</title>
+</head>
+<body>
+  <h1>Job search</h1>
+  <p>Staff only. This page reads a stored result. It does not score candidates.</p>
+  <form id="job-search-form">
+    {% csrf_token %}
+    <button type="submit" id="run-job-search">Run job search</button>
+  </form>
+  <pre id="job-search-body">{% if latest %}{{ latest.body }}{% endif %}</pre>
+  <script>
+    const form = document.getElementById("job-search-form");
+    const output = document.getElementById("job-search-body");
+    const token = form.querySelector("[name=csrfmiddlewaretoken]").value;
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      output.textContent = "Searching the named sources…";
+      const response = await fetch("/api/ingestion/search-runs/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Accept": "application/json",
+          "X-CSRFToken": token,
+        },
+      });
+      const payload = await response.json();
+      output.textContent = response.ok ? payload.body : (payload.detail || "The search did not run.");
+    });
+  </script>
+</body>
+</html>
