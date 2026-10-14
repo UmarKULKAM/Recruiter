@@ -53,6 +53,12 @@ celery -A config beat --loglevel=info
 
 The broker defaults to `redis://localhost:6379/0` (`CELERY_BROKER_URL`).
 
+## Job search
+
+A staff user opens `/staff/job-search/` and presses **Run job search**. That button POSTs `/api/ingestion/search-runs/`. The view reads the named pages in `prompts/job_search.txt` and stores the reply on `JobSearchRun`. It does not create `EmploymentPosting` or `ProcurementTender` rows. Opening the page, or GET on the same API, returns stored text and does not run the sweep or score a candidate.
+
+The reference date is the server's local date in `Africa/Kampala`, written into the user message and then read back from that message. A listing is kept only when the page states a posted date and a deadline, the posted date is within the last 14 days, and the deadline has not passed. Undated, closed, and archived listings are dropped. The stored text is grouped by Aggregators, Public Sector, and Corporate. A target with nothing that passes is the sentence `No active listings within the 14-day window.` A source that cannot be read is `The source page could not be read, so no listing was verified.` The `model_id` is `direct-source-sweep`.
+
 ## Candidate coach
 
 `apps.coaching` uses the Gemini wrapper in `apps/ingestion/gemini.py`. Closing untrusted tags are stripped, the system instruction is the shared policy plus one mode prompt, and the service reads `response.parsed` before its serializer. The interview call is synchronous `generate_content`. It is not queued on Celery.

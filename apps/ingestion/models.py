@@ -52,3 +52,22 @@ class EmploymentPosting(Listing):
 
 class ProcurementTender(Listing):
     """A parsed public procurement or supply tender. Not an employment post."""
+
+
+class JobSearchRun(models.Model):
+    """Text returned by one staff job-search sweep.
+
+    The row stores the reply. It is not an employment post and not a tender.
+    """
+
+    body = models.TextField()
+    model_id = models.CharField(max_length=64)
+    reference_date = models.DateField()
+    user_message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-pk"]
+
+    def __str__(self) -> str:
+        return f"Job search {self.reference_date} ({self.model_id})"
